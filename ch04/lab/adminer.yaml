@@ -26,4 +26,24 @@ spec:
       containers:
         - name: web
           image: adminer:4.7-standalone
+          env:
+            - name: ADMINER_DEFAULT_SERVER_FILE
+              value: /secrets/default-server
+            - name: ADMINER_DESIGN
+              valueFrom:
+                configMapKeyRef:
+                  name: adminer-config
+                  key: ADMINER_DESIGN
+          volumeMounts:
+            - name: secret
+              mountPath: "/secrets"
           args: ["php", "-S", "0.0.0.0:8080", "-t", "/var/www/html"]
+
+      volumes:
+        - name: secret
+          secret:
+            secretName: ch04-adminer-default-server-secret
+            defaultMode: 0400
+            items:
+              - key: ADMINER_DEFAULT_SERVER
+                path: default-server
