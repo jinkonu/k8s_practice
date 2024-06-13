@@ -71,7 +71,23 @@ spec:
             - name: config
               mountPath: "/etc/nginx/"
               readOnly: true
+            - name: cache
+              mountPath: "/data/nginx/cache"
       volumes:
         - name: config
           configMap:
             name: todo-proxy-lab-configmap
+        - name: cache
+          persistentVolumeClaim:
+            claimName: nginx-pvc-kiamol
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nginx-pvc-kiamol
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
